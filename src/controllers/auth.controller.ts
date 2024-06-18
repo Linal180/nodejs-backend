@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { UserService } from '../services';
 import { getErrorMessage } from '../utils';
 import { RequestWithUser } from '../types';
+import { userMapper } from '../dto';
+import { User } from '../entity/User';
 
 const userService = new UserService()
 
@@ -38,7 +40,7 @@ export class UserController {
         return res.status(401).json({ message: 'Unauthorized' });
       }
 
-      return res.status(200).json(req.user); // Return the user information attached by the middleware
+      return res.status(200).json(userMapper(req.user as User)); // Return the user information attached by the middleware
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });
     }
