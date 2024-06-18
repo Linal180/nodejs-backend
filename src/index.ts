@@ -2,10 +2,19 @@ import "reflect-metadata";
 import { AppDataSource } from "./data-source"
 import { authRoutes } from "./routes";
 import express = require("express");
+import cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
+
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS?.split(",") || "*",
+  methods: ["GET", "POST", "PUT", "DELETE"], 
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 // AppDataSource.initialize().then(async () => {
 

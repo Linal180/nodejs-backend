@@ -3,7 +3,10 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { CreateUserDTO, GenerateTokenDTO, UserDTO, createUserMapper, generateTokenMapper, userMapper } from '../dto';
+import {
+  CreateUserDTO, GenerateTokenDTO, UserDTO, createUserMapper, generateTokenMapper,
+  userMapper
+} from '../dto';
 
 export class UserService {
   private userRepository: Repository<User>;
@@ -40,14 +43,18 @@ export class UserService {
     return null;
   }
 
-  generateJWT(user: User):  GenerateTokenDTO{
+  generateJWT(user: User): GenerateTokenDTO {
     const payload = {
       id: user.id,
       email: user.email,
       updatedAt: user.updatedAt,
       userType: user.userType,
     };
-    
+
     return generateTokenMapper(jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '24h' }), user);
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { id } });
   }
 }

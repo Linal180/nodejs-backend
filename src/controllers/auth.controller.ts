@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services';
 import { getErrorMessage } from '../utils';
+import { RequestWithUser } from '../types';
 
 const userService = new UserService()
+
 export class UserController {
 
   async signup(req: Request, res: Response) {
@@ -25,6 +27,18 @@ export class UserController {
 
       const { jwt, updatedAt, userType, utcHoursOffset } = userService.generateJWT(user);
       return res.status(200).json({ jwt, updatedAt, userType, utcHoursOffset });
+    } catch (error) {
+      return res.status(500).json({ message: getErrorMessage(error) });
+    }
+  }
+
+  async getCurrentUser(req: RequestWithUser, res: Response) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      return res.status(200).json(req.user); // Return the user information attached by the middleware
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });
     }
